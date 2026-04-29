@@ -36,6 +36,14 @@ CONNEXION PAR DÉFAUT
   Mot de passe : password
 
 
+AUTRES CONNEXION
+---------------------
+Identifiant:momo
+MDP:12345678
+
+Identifiant:juju07
+MDP:000000
+
 STRUCTURE DES DONNÉES
 ----------------------
   data/produits.json    — Catalogue produits
