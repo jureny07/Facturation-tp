@@ -56,6 +56,8 @@ RÔLES
   manager    : produits, facturation, rapports
   caissier   : facturation uniquement
 
+MEMBRE DU GROUPE :AMANI MACHUMBI JURENY,MABIALA BONDIMI MOISE,TSHIMANGA MBIYA VICTOIRE
+
 LECTURE DE CODES-BARRES
 ------------------------
 - Nécessite un accès caméra (HTTPS en production, localhost en dev)
