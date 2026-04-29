@@ -1,0 +1,26 @@
+[
+    {
+        "identifiant": "admin",
+        "mot_de_passe": "$2y$10$tAoLiBvE5JnC1r0BvaFoau5rCocjG4dcJ7N8FRkcjqGrlS\/C7\/jge",
+        "role": "superadmin",
+        "nom_complet": "Super Administrateur",
+        "date_creation": "2026-04-17",
+        "actif": true
+    },
+    {
+        "identifiant": "moise_01",
+        "mot_de_passe": "$2y$10$uROvuSSUIYTFMyRspNhU3.If1DWKm8ewNut3aUgw6dycG28Oj9Mea",
+        "role": "superadmin",
+        "nom_complet": "Moise_mabiala",
+        "date_creation": "2026-04-29",
+        "actif": true
+    },
+    {
+        "identifiant": "juju07",
+        "mot_de_passe": "$2y$10$xIWDgC3I\/rzdgBbt4ADZ0e7Io0SdDzJ8luaxov1Rd\/.YtnuBQth2K",
+        "role": "caissier",
+        "nom_complet": "Jureny",
+        "date_creation": "2026-04-29",
+        "actif": true
+    }
+]
