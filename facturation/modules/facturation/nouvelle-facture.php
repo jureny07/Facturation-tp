@@ -225,19 +225,33 @@ require_once __DIR__ . '/../../includes/header.php';
 <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
 <script src="/assets/js/scanner.js"></script>
 <script>
-  initScanner('scanner-video', 'scanner-result', 'code_barre', function(code) {
-    // Optionnel : chercher le nom du produit en temps réel
-    fetch('/modules/produits/lire.php?code=' + encodeURIComponent(code))
-      .then(r => r.json())
-      .then(data => {
-        const el = document.getElementById('scanner-result');
-        if (data.found) {
-          el.innerHTML = '<span class="dot"></span> ✔ ' + data.produit.nom + ' — ' + data.produit.prix_unitaire_ht + ' CDF — Stock : ' + data.produit.quantite_stock;
-        } else {
-          el.innerHTML = '<span style="color:var(--red)">⚠ Produit inconnu : ' + code + '</span>';
-        }
-      });
-  });
+  // Attendre que QuaggaJS soit chargé
+  if (typeof Quagga !== 'undefined') {
+    initScanner('scanner-video', 'scanner-result', 'code_barre', function(code) {
+      // Optionnel : chercher le nom du produit en temps réel
+      fetch('/modules/produits/lire.php?code=' + encodeURIComponent(code))
+        .then(r => r.json())
+        .then(data => {
+          const el = document.getElementById('scanner-result');
+          if (data.found) {
+            el.innerHTML = '<span class="dot"></span> ✔ ' + data.produit.nom + ' — ' + data.produit.prix_unitaire_ht + ' CDF — Stock : ' + data.produit.quantite_stock;
+          } else {
+            el.innerHTML = '<span style="color:var(--red)">⚠ Produit inconnu : ' + code + '</span>';
+          }
+        })
+        .catch(err => {
+          console.error('Erreur lors de la recherche du produit:', err);
+          const el = document.getElementById('scanner-result');
+          el.innerHTML = '<span class="dot"></span> Code scanné : <strong>' + code + '</strong>';
+        });
+    });
+  } else {
+    console.error('QuaggaJS failed to load from CDN');
+    const resultEl = document.getElementById('scanner-result');
+    if (resultEl) {
+      resultEl.innerHTML = '<span style="color:var(--red)">⚠ Erreur : Impossible de charger la bibliothèque scanner. Veuillez vérifier votre connexion Internet et recharger la page.</span>';
+    }
+  }
 </script>
 
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>

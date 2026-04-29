@@ -13,9 +13,25 @@ function initScanner(videoId, resultId, inputId, onScan) {
   let   lastCode = '';
   let   running  = false;
 
+  // Vérifier si QuaggaJS est chargé
+  if (typeof Quagga === 'undefined') {
+    if (resultEl) {
+      resultEl.innerHTML = '<span style="color:var(--red)">⚠ Erreur : QuaggaJS non chargé. Veuillez recharger la page.</span>';
+    }
+    console.error('QuaggaJS library not loaded');
+    return;
+  }
+
   function startScanner() {
     if (running) return;
     running = true;
+
+    // Vérifier la compatibilité du navigateur
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      if (resultEl) resultEl.innerHTML = '<span style="color:var(--red)">⚠ Votre navigateur ne supporte pas l\'accès caméra.</span>';
+      running = false;
+      return;
+    }
 
     Quagga.init({
       inputStream: {
@@ -38,11 +54,31 @@ function initScanner(videoId, resultId, inputId, onScan) {
     }, function(err) {
       if (err) {
         console.error('QuaggaJS init error:', err);
-        if (resultEl) resultEl.innerHTML = '<span style="color:var(--red)">⚠ Caméra inaccessible : ' + err.message + '</span>';
+        let errorMsg = 'Erreur : ';
+        
+        // Gestion spécifique des erreurs
+        if (err.name === 'NotAllowedError' || err.message.includes('Permission denied')) {
+          errorMsg = '⚠ Accès caméra refusé. Vérifiez les permissions du navigateur.';
+        } else if (err.name === 'NotFoundError' || err.message.includes('not found')) {
+          errorMsg = '⚠ Aucune caméra détectée sur votre appareil.';
+        } else if (err.name === 'NotReadableError' || err.message.includes('could not start')) {
+          errorMsg = '⚠ La caméra est déjà utilisée par une autre application.';
+        } else {
+          errorMsg = '⚠ ' + (err.message || 'Erreur caméra inconnue');
+        }
+        
+        if (resultEl) resultEl.innerHTML = '<span style="color:var(--red)">' + errorMsg + '</span>';
         running = false;
+        
+        // Réactiver le bouton démarrer
+        const btnStart = document.getElementById('btn-scanner-start');
+        if (btnStart) btnStart.disabled = false;
+        
         return;
       }
+      
       Quagga.start();
+      if (resultEl) resultEl.innerHTML = '<span class="dot"></span> Scanner actif…';
     });
 
     Quagga.onDetected(function(result) {
@@ -77,35 +113,51 @@ function initScanner(videoId, resultId, inputId, onScan) {
       // Arrêt auto après scan pour éviter les doublons
       setTimeout(stopScanner, 800);
     });
+
+    Quagga.onProcessed(function(result) {
+      // Mise à jour en temps réel (facultatif)
+      // Peut être utilisé pour des visualisations avancées
+    });
   }
 
   function stopScanner() {
     if (!running) return;
-    Quagga.stop();
+    try {
+      Quagga.stop();
+    } catch (e) {
+      console.warn('Error stopping Quagga:', e);
+    }
     running = false;
+    if (resultEl) resultEl.innerHTML = '<span class="dot"></span> Scanner arrêté.';
   }
 
   // Bouton démarrer
   const btnStart = document.getElementById('btn-scanner-start');
   const btnStop  = document.getElementById('btn-scanner-stop');
 
-  if (btnStart) btnStart.addEventListener('click', function() {
+  if (btnStart) btnStart.addEventListener('click', function(e) {
+    e.preventDefault();
     lastCode = ''; // reset pour permettre un nouveau scan
     startScanner();
     this.disabled = true;
     if (btnStop) btnStop.disabled = false;
   });
 
-  if (btnStop) btnStop.addEventListener('click', function() {
+  if (btnStop) btnStop.addEventListener('click', function(e) {
+    e.preventDefault();
     stopScanner();
     if (btnStart) btnStart.disabled = false;
     this.disabled = true;
   });
 
   // Auto-start si présent dans la page
-  if (document.getElementById(videoId)) {
-    startScanner();
-    if (btnStart) btnStart.disabled = true;
+  const videoEl = document.getElementById(videoId);
+  if (videoEl && videoEl.parentElement) {
+    // Attendre un peu pour que le DOM soit prêt
+    setTimeout(function() {
+      startScanner();
+      if (btnStart) btnStart.disabled = true;
+    }, 300);
   }
 }
 

@@ -55,8 +55,6 @@ require_once __DIR__ . '/../includes/header.php';
       </div>
       <button type="submit" class="btn btn-primary btn-full">Se connecter</button>
     </form>
-
-    <p class="auth-hint">Compte par défaut : <code>admin</code> / <code>password</code></p>
   </div>
 </div>
 
