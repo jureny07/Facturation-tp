@@ -22,5 +22,13 @@
         "nom_complet": "Jureny",
         "date_creation": "2026-04-29",
         "actif": true
+    },
+    {
+        "identifiant": "kira",
+        "mot_de_passe": "$2y$10$shCAe9yZRgl.r36poOc4XO8XrP30iDS70YoVg\/ZuxtDYojg1hQbYG",
+        "role": "caissier",
+        "nom_complet": "tshimanga",
+        "date_creation": "2026-05-28",
+        "actif": true
     }
 ]

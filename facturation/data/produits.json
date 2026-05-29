@@ -1,1 +1,322 @@
-[]
+[
+    {
+        "code_barre": "1112211222211",
+        "nom": "savon",
+        "prix_unitaire_ht": 4000,
+        "date_expiration": "2027-12-05",
+        "quantite_stock": 21,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "9685342658798644",
+        "nom": "bonbon",
+        "prix_unitaire_ht": 2500,
+        "date_expiration": "2026-06-11",
+        "quantite_stock": 57,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "75247385483.6",
+        "nom": "huile",
+        "prix_unitaire_ht": 30000,
+        "date_expiration": "2030-05-12",
+        "quantite_stock": 20,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000001",
+        "nom": "riz",
+        "prix_unitaire_ht": 25000,
+        "date_expiration": "2027-01-01",
+        "quantite_stock": 50,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000002",
+        "nom": "sucre",
+        "prix_unitaire_ht": 22000,
+        "date_expiration": "2027-03-15",
+        "quantite_stock": 40,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000003",
+        "nom": "farine",
+        "prix_unitaire_ht": 18000,
+        "date_expiration": "2027-02-10",
+        "quantite_stock": 35,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000004",
+        "nom": "pâtes",
+        "prix_unitaire_ht": 12000,
+        "date_expiration": "2026-12-30",
+        "quantite_stock": 60,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000005",
+        "nom": "tomate",
+        "prix_unitaire_ht": 8000,
+        "date_expiration": "2026-06-10",
+        "quantite_stock": 25,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000006",
+        "nom": "oignon",
+        "prix_unitaire_ht": 5000,
+        "date_expiration": "2026-06-05",
+        "quantite_stock": 30,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000007",
+        "nom": "ail",
+        "prix_unitaire_ht": 3000,
+        "date_expiration": "2026-07-01",
+        "quantite_stock": 45,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000008",
+        "nom": "lait",
+        "prix_unitaire_ht": 6000,
+        "date_expiration": "2026-06-20",
+        "quantite_stock": 70,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000009",
+        "nom": "yaourt",
+        "prix_unitaire_ht": 3500,
+        "date_expiration": "2026-06-08",
+        "quantite_stock": 80,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000010",
+        "nom": "eau minérale",
+        "prix_unitaire_ht": 1500,
+        "date_expiration": "2027-12-31",
+        "quantite_stock": 120,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000011",
+        "nom": "coca cola",
+        "prix_unitaire_ht": 2000,
+        "date_expiration": "2026-11-10",
+        "quantite_stock": 90,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000012",
+        "nom": "fanta",
+        "prix_unitaire_ht": 2000,
+        "date_expiration": "2026-11-10",
+        "quantite_stock": 90,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000013",
+        "nom": "pain",
+        "prix_unitaire_ht": 3000,
+        "date_expiration": "2026-05-30",
+        "quantite_stock": 100,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000014",
+        "nom": "beurre",
+        "prix_unitaire_ht": 7000,
+        "date_expiration": "2026-07-15",
+        "quantite_stock": 25,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000015",
+        "nom": "fromage",
+        "prix_unitaire_ht": 9000,
+        "date_expiration": "2026-07-20",
+        "quantite_stock": 20,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000016",
+        "nom": "chocolat",
+        "prix_unitaire_ht": 5000,
+        "date_expiration": "2026-10-10",
+        "quantite_stock": 60,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000017",
+        "nom": "café",
+        "prix_unitaire_ht": 15000,
+        "date_expiration": "2027-01-10",
+        "quantite_stock": 40,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000018",
+        "nom": "thé",
+        "prix_unitaire_ht": 8000,
+        "date_expiration": "2027-02-10",
+        "quantite_stock": 35,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000019",
+        "nom": "biscuit",
+        "prix_unitaire_ht": 2500,
+        "date_expiration": "2026-09-10",
+        "quantite_stock": 85,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000020",
+        "nom": "jus d'orange",
+        "prix_unitaire_ht": 4500,
+        "date_expiration": "2026-07-25",
+        "quantite_stock": 55,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000021",
+        "nom": "savon liquide",
+        "prix_unitaire_ht": 6000,
+        "date_expiration": "2027-05-10",
+        "quantite_stock": 40,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000022",
+        "nom": "dentifrice",
+        "prix_unitaire_ht": 4000,
+        "date_expiration": "2027-04-10",
+        "quantite_stock": 60,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000023",
+        "nom": "brosse à dents",
+        "prix_unitaire_ht": 3000,
+        "date_expiration": "2030-01-01",
+        "quantite_stock": 70,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000024",
+        "nom": "shampooing",
+        "prix_unitaire_ht": 9000,
+        "date_expiration": "2027-06-01",
+        "quantite_stock": 45,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000025",
+        "nom": "détergent",
+        "prix_unitaire_ht": 10000,
+        "date_expiration": "2027-08-01",
+        "quantite_stock": 30,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000026",
+        "nom": "papier toilette",
+        "prix_unitaire_ht": 7000,
+        "date_expiration": "2030-01-01",
+        "quantite_stock": 100,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000027",
+        "nom": "huile de palme",
+        "prix_unitaire_ht": 28000,
+        "date_expiration": "2030-06-01",
+        "quantite_stock": 25,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000028",
+        "nom": "poisson séché",
+        "prix_unitaire_ht": 15000,
+        "date_expiration": "2026-12-01",
+        "quantite_stock": 20,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000029",
+        "nom": "viande",
+        "prix_unitaire_ht": 20000,
+        "date_expiration": "2026-06-15",
+        "quantite_stock": 18,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000030",
+        "nom": "poulet",
+        "prix_unitaire_ht": 18000,
+        "date_expiration": "2026-06-12",
+        "quantite_stock": 22,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000031",
+        "nom": "poivre",
+        "prix_unitaire_ht": 2000,
+        "date_expiration": "2028-01-01",
+        "quantite_stock": 50,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000032",
+        "nom": "sel",
+        "prix_unitaire_ht": 1500,
+        "date_expiration": "2030-01-01",
+        "quantite_stock": 80,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000033",
+        "nom": "mayonnaise",
+        "prix_unitaire_ht": 5000,
+        "date_expiration": "2026-10-01",
+        "quantite_stock": 35,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000034",
+        "nom": "ketchup",
+        "prix_unitaire_ht": 4500,
+        "date_expiration": "2026-10-01",
+        "quantite_stock": 40,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000035",
+        "nom": "savon noir",
+        "prix_unitaire_ht": 3500,
+        "date_expiration": "2027-05-01",
+        "quantite_stock": 50,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000036",
+        "nom": "céréales",
+        "prix_unitaire_ht": 12000,
+        "date_expiration": "2026-12-20",
+        "quantite_stock": 21,
+        "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "1000000000037",
+        "nom": "biscuits salés",
+        "prix_unitaire_ht": 3000,
+        "date_expiration": "2026-09-15",
+        "quantite_stock": 63,
+        "date_enregistrement": "2026-05-28"
+    }
+]

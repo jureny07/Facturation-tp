@@ -56,13 +56,13 @@ require_once __DIR__ . '/../../includes/header.php';
       <label for="nom_complet">Nom complet</label>
       <input type="text" id="nom_complet" name="nom_complet"
              value="<?= htmlspecialchars($_POST['nom_complet'] ?? '') ?>"
-             placeholder="Prénom Nom" required>
+             placeholder="Nom et prenom" required>
     </div>
     <div class="form-group">
       <label for="identifiant">Identifiant</label>
       <input type="text" id="identifiant" name="identifiant"
              value="<?= htmlspecialchars($_POST['identifiant'] ?? '') ?>"
-             placeholder="prenom.nom" pattern="[a-z0-9._-]{3,30}" required>
+             placeholder="id" pattern="[a-z0-9._-]{3,30}" required>
       <small style="color:var(--text-muted)">Minuscules, chiffres, point et trait d'union uniquement.</small>
     </div>
     <div class="form-group">
@@ -78,7 +78,7 @@ require_once __DIR__ . '/../../includes/header.php';
       <div class="form-group">
         <label for="mot_de_passe">Mot de passe</label>
         <input type="password" id="mot_de_passe" name="mot_de_passe"
-               placeholder="Min. 6 caractères" required minlength="6">
+               placeholder="Min. 8 caractères" required minlength="8">
       </div>
       <div class="form-group">
         <label for="confirmation">Confirmation</label>

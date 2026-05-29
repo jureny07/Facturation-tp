@@ -1,4 +1,6 @@
 <?php
+
+// centralisation de la configuration globale de l'application
 // config/config.php — Paramètres globaux de l'application
 
 define('APP_NAME', 'SuperMarché — Système de Caisse');

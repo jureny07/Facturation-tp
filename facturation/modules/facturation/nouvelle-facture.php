@@ -12,6 +12,16 @@ if (!isset($_SESSION['panier'])) $_SESSION['panier'] = [];
 $erreur_article = '';
 $info_article   = '';
 
+$code_value = '';
+if (!empty($_GET['code'])) {
+    $code_value = trim($_GET['code']);
+    if (isset($_GET['auto_add']) && $_GET['auto_add'] === '1') {
+        $_POST['action'] = 'ajouter';
+        $_POST['code_barre'] = $code_value;
+        $_POST['quantite'] = 1;
+    }
+}
+
 // ── Action : Ajouter un article ──────────────────────────────
 if (isset($_POST['action']) && $_POST['action'] === 'ajouter') {
     $code     = trim($_POST['code_barre'] ?? '');
@@ -104,7 +114,7 @@ require_once __DIR__ . '/../../includes/header.php';
     <div class="card">
       <div class="card-title">📷 Scanner un Article</div>
       <div class="scanner-wrapper">
-        <video id="scanner-video" muted playsinline></video>
+        <div id="reader" style="width:100%;max-width:400px;margin:auto;"></div>
         <div class="scanner-overlay"><div class="scanner-crosshair"></div></div>
       </div>
       <div class="scanner-result" id="scanner-result">
@@ -113,6 +123,9 @@ require_once __DIR__ . '/../../includes/header.php';
       <div class="scanner-controls">
         <button id="btn-scanner-start" class="btn btn-primary">▶ Démarrer</button>
         <button id="btn-scanner-stop"  class="btn btn-secondary" disabled>⏹ Arrêter</button>
+      </div>
+      <div class="scanner-help" style="margin-top:.75rem;color:#999;font-size:.95rem;">
+        <span>📱 Sur mobile, appuyez sur Démarrer puis présentez le code-barres ou QR devant la caméra.</span>
       </div>
     </div>
 
@@ -130,7 +143,7 @@ require_once __DIR__ . '/../../includes/header.php';
         <div class="form-group">
           <label for="code_barre">Code-Barres</label>
           <input type="text" id="code_barre" name="code_barre"
-                 placeholder="Scanner ou saisir" required autofocus>
+                 placeholder="Scanner ou saisir" required autofocus value="<?= htmlspecialchars($code_value) ?>">
         </div>
         <div class="form-group">
           <label for="quantite">Quantité</label>
@@ -222,22 +235,100 @@ require_once __DIR__ . '/../../includes/header.php';
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
-<script src="/assets/js/scanner.js"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
 <script>
-  initScanner('scanner-video', 'scanner-result', 'code_barre', function(code) {
-    // Optionnel : chercher le nom du produit en temps réel
-    fetch('/modules/produits/lire.php?code=' + encodeURIComponent(code))
-      .then(r => r.json())
-      .then(data => {
-        const el = document.getElementById('scanner-result');
-        if (data.found) {
-          el.innerHTML = '<span class="dot"></span> ✔ ' + data.produit.nom + ' — ' + data.produit.prix_unitaire_ht + ' CDF — Stock : ' + data.produit.quantite_stock;
-        } else {
-          el.innerHTML = '<span style="color:var(--red)">⚠ Produit inconnu : ' + code + '</span>';
+  const scannerResult = document.getElementById('scanner-result');
+  const scannerStartBtn = document.getElementById('btn-scanner-start');
+  const scannerStopBtn = document.getElementById('btn-scanner-stop');
+  const codeInput = document.getElementById('code_barre');
+  const formAjouter = document.getElementById('form-ajouter');
+  const readerElement = document.getElementById('reader');
+
+  let html5QrcodeScanner = null;
+  let lastScannedCode = null;
+
+  function updateScannerStatus(message, color = '#999') {
+    if (!scannerResult) return;
+    scannerResult.innerHTML = '<span class="dot"></span> ' + message;
+    scannerResult.style.color = color;
+  }
+
+  async function startMobileScanner() {
+    if (!readerElement || html5QrcodeScanner) {
+      return;
+    }
+    html5QrcodeScanner = new Html5Qrcode('reader');
+    scannerStartBtn.disabled = true;
+    scannerStopBtn.disabled = false;
+    updateScannerStatus('🔄 Démarrage du scanner mobile...');
+
+    try {
+      await html5QrcodeScanner.start(
+        { facingMode: 'environment' },
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        (decodedText) => {
+          if (!decodedText || decodedText === lastScannedCode) return;
+          lastScannedCode = decodedText;
+          codeInput.value = decodedText;
+
+          // Lookup produit et afficher les infos sans soumettre le formulaire
+          fetch('/facturation/modules/produits/lire.php?code=' + encodeURIComponent(decodedText))
+            .then(r => r.json())
+            .then(data => {
+              if (data && data.found) {
+                updateScannerStatus('✔ ' + data.produit.nom + ' — ' + data.produit.prix_unitaire_ht + ' CDF — Stock : ' + data.produit.quantite_stock, '#4caf50');
+              } else {
+                updateScannerStatus('⚠ Produit inconnu : ' + decodedText, '#f44336');
+              }
+            })
+            .catch(err => {
+              console.error('Erreur lookup produit', err);
+              updateScannerStatus('❌ Erreur recherche produit', '#f44336');
+            });
+
+          // Préremplir la quantité et donner le focus au caissier
+          const qtyEl = document.getElementById('quantite');
+          if (qtyEl) {
+            qtyEl.value = '1';
+            try { qtyEl.focus(); } catch(e) {}
+          }
+
+          // Ne PAS soumettre automatiquement — l'opérateur cliquera sur « Ajouter »
+        },
+        (errorMessage) => {
+          // Ignore les erreurs mineures de lecture.
         }
-      });
-  });
+      );
+      updateScannerStatus('▶ Scanner mobile actif. Présentez un code-barres ou QR.', '#4caf50');
+    } catch (error) {
+      console.error('Erreur démarrage scanner mobile', error);
+      updateScannerStatus('❌ Impossible d\'accéder à la caméra.', '#f44336');
+      scannerStartBtn.disabled = false;
+      scannerStopBtn.disabled = true;
+      html5QrcodeScanner = null;
+    }
+  }
+
+  async function stopMobileScanner() {
+    if (!html5QrcodeScanner) return;
+    try {
+      await html5QrcodeScanner.stop();
+      html5QrcodeScanner.clear();
+    } catch (error) {
+      console.error('Erreur arrêt scanner mobile', error);
+    }
+    html5QrcodeScanner = null;
+    scannerStartBtn.disabled = false;
+    scannerStopBtn.disabled = true;
+    updateScannerStatus('⏹ Scanner mobile arrêté.', '#999');
+  }
+
+  if (scannerStartBtn) {
+    scannerStartBtn.addEventListener('click', startMobileScanner);
+  }
+  if (scannerStopBtn) {
+    scannerStopBtn.addEventListener('click', stopMobileScanner);
+  }
 </script>
 
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>

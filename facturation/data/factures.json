@@ -1,1 +1,70 @@
-[]
+[
+    {
+        "id_facture": "FAC-20260528-001",
+        "date": "2026-05-28",
+        "heure": "21:01:39",
+        "caissier": "admin",
+        "articles": [
+            {
+                "code_barre": "1112211222211",
+                "nom": "savon",
+                "prix_unitaire_ht": 4000,
+                "quantite": 6,
+                "sous_total_ht": 24000
+            }
+        ],
+        "total_ht": 24000,
+        "tva": 4320,
+        "total_ttc": 28320
+    },
+    {
+        "id_facture": "FAC-20260528-002",
+        "date": "2026-05-28",
+        "heure": "21:04:14",
+        "caissier": "admin",
+        "articles": [
+            {
+                "code_barre": "1112211222211",
+                "nom": "savon",
+                "prix_unitaire_ht": 4000,
+                "quantite": 3,
+                "sous_total_ht": 12000
+            },
+            {
+                "code_barre": "9685342658798644",
+                "nom": "bonbon",
+                "prix_unitaire_ht": 2500,
+                "quantite": 3,
+                "sous_total_ht": 7500
+            }
+        ],
+        "total_ht": 19500,
+        "tva": 3510,
+        "total_ttc": 23010
+    },
+    {
+        "id_facture": "FAC-20260529-001",
+        "date": "2026-05-29",
+        "heure": "00:54:18",
+        "caissier": "admin",
+        "articles": [
+            {
+                "code_barre": "1000000000037",
+                "nom": "biscuits salés",
+                "prix_unitaire_ht": 3000,
+                "quantite": 2,
+                "sous_total_ht": 6000
+            },
+            {
+                "code_barre": "1000000000036",
+                "nom": "céréales",
+                "prix_unitaire_ht": 12000,
+                "quantite": 7,
+                "sous_total_ht": 84000
+            }
+        ],
+        "total_ht": 90000,
+        "tva": 16200,
+        "total_ttc": 106200
+    }
+]

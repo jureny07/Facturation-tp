@@ -10,8 +10,9 @@ if (isset($_SESSION['identifiant'])) {
 }
 
 $erreur = '';
-
+//s executer lors de la soumission du formulaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  // trim enleve les espaces avant et apres la chaine de caractere
     $identifiant  = trim($_POST['identifiant'] ?? '');
     $mot_de_passe = $_POST['mot_de_passe'] ?? '';
 

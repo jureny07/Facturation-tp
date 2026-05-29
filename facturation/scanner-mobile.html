@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scanner Mobile</title>
+
+<style>
+body { 
+  font-family: Arial; 
+  text-align: center; 
+  background: #111; 
+  color: white; 
+  padding: 2rem;
+}
+#reader { 
+  width: 100%; 
+  max-width: 400px; 
+  margin: auto; 
+}
+#status { 
+  margin-top: 10px; 
+  color: lime; 
+  font-size: 1.1rem;
+  min-height: 1.5rem;
+}
+button {
+  cursor: pointer;
+  border-radius: 4px;
+  border: none;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+button:hover:not(:disabled) {
+  opacity: 0.8;
+  transform: scale(1.05);
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+</style>
+</head>
+
+<body>
+
+<h2>📱 Scanner Mobile</h2>
+<p id="api-info" style="font-size:.95rem;color:#bbb;margin-top:1rem;"></p>
+
+<div style="margin:2rem auto;">
+  <button id="btn-start-camera" style="padding:1rem 2rem;font-size:1.1rem;background:#4caf50;color:white;">🎥 Autoriser l'accès à la caméra</button>
+</div>
+
+<div id="reader" style="display:none;width:100%; max-width:400px; margin:auto;"></div>
+<div id="status" style="display:none;">En attente...</div>
+<button id="btn-stop-camera" style="display:none;padding:.5rem 1rem;margin-top:1rem;background:#f44336;color:white;">⏹ Arrêter le scanner</button>
+<button id="btn-add-invoice" style="display:none;padding:1rem 2rem;font-size:1.1rem;background:#2196f3;color:white;margin-top:1rem;">➕ Ajouter à la facture</button>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<script>
+const status = document.getElementById("status");
+const apiInfo = document.getElementById("api-info");
+const btnStartCamera = document.getElementById("btn-start-camera");
+const btnStopCamera = document.getElementById("btn-stop-camera");
+const btnAddInvoice = document.getElementById("btn-add-invoice");
+const readerDiv = document.getElementById("reader");
+
+const DEFAULT_SERVER = "192.168.1.68:8000";
+const serverHost = new URLSearchParams(location.search).get('server') || DEFAULT_SERVER;
+const API = `http://${serverHost}/facturation/api/scan.php`;
+const FACTURE_PAGE = `http://${serverHost}/facturation/modules/facturation/nouvelle-facture.php`;
+
+let scanner = null;
+let isRunning = false;
+
+if (apiInfo) {
+  apiInfo.innerHTML = `Serveur de scan : <strong>${API}</strong>`;
+}
+
+async function initializeScanner() {
+  try {
+    scanner = new Html5Qrcode("reader");
+    readerDiv.style.display = "block";
+    status.style.display = "block";
+    btnStartCamera.style.display = "none";
+    btnStopCamera.style.display = "inline-block";
+    status.innerHTML = "🔄 Initialisation de la caméra...";
+    status.style.color = "#ffeb3b";
+    isRunning = true;
+    
+    await scanner.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: 250 },
+      async (code) => {
+        status.innerHTML = "✔ Scan détecté : " + code;
+        status.style.color = "#4caf50";
+
+        try {
+          const response = await fetch(API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ code })
+          });
+
+          const data = await response.json();
+          if (data.status === 'ok') {
+            status.innerHTML = `✔ Envoi OK : ${code}`;
+            status.style.color = "#4caf50";
+            navigator.vibrate?.(100);
+            if (btnAddInvoice) {
+              btnAddInvoice.style.display = 'inline-block';
+              btnAddInvoice.onclick = () => {
+                window.open(`${FACTURE_PAGE}?code=${encodeURIComponent(code)}&auto_add=1`, '_blank');
+              };
+            }
+          } else {
+            status.innerHTML = `❌ Erreur serveur : ${data.message || 'inconnue'}`;
+            status.style.color = "#f44336";
+          }
+        } catch (e) {
+          status.innerHTML = "❌ Erreur d'envoi";
+          status.style.color = "#f44336";
+          console.error(e);
+        }
+      }
+    );
+    status.innerHTML = "▶ Scanner actif. Présentez un code QR ou un code-barres.";
+    status.style.color = "lime";
+  } catch (error) {
+    console.error('Erreur d\'initialisation du scanner', error);
+    status.innerHTML = "❌ Impossible d'accéder à la caméra. Vérifiez les permissions.";
+    status.style.color = "#f44336";
+    isRunning = false;
+    btnStartCamera.style.display = "inline-block";
+    btnStopCamera.style.display = "none";
+    readerDiv.style.display = "none";
+  }
+}
+
+async function stopScanner() {
+  if (scanner && isRunning) {
+    try {
+      await scanner.stop();
+      scanner.clear();
+    } catch (e) {
+      console.error('Erreur lors de l\'arrêt du scanner', e);
+    }
+  }
+  readerDiv.style.display = "none";
+  status.style.display = "none";
+  btnStartCamera.style.display = "inline-block";
+  btnStopCamera.style.display = "none";
+  isRunning = false;
+  scanner = null;
+}
+
+btnStartCamera.addEventListener('click', initializeScanner);
+btnStopCamera.addEventListener('click', stopScanner);
+</script>
+
+</body>
+</html>
