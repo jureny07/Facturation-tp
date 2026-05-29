@@ -1,5 +1,6 @@
 <?php
 // index.php — Page d'accueil / tableau de bord
+//http://localhost:8000/facturation/auth/login.php
 
 require_once __DIR__ . '../auth/session.php';
 exiger_role(ROLE_CAISSIER);

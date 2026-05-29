@@ -88,7 +88,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'valider') {
     if (is_array($resultat)) {
         $_SESSION['panier'] = [];
         $_SESSION['derniere_facture'] = $resultat;
-        header('Location: /modules/facturation/afficher-facture.php');
+        header('Location: /facturation/modules/facturation/afficher-facture.php');
         exit;
     } else {
         $erreur_article = $resultat;
@@ -252,7 +252,7 @@ require_once __DIR__ . '/../../includes/header.php';
     scannerResult.innerHTML = '<span class="dot"></span> ' + message;
     scannerResult.style.color = color;
   }
-
+// Ici, on attend le démarrage de la caméra. asynchrone
   async function startMobileScanner() {
     if (!readerElement || html5QrcodeScanner) {
       return;
@@ -271,7 +271,7 @@ require_once __DIR__ . '/../../includes/header.php';
           lastScannedCode = decodedText;
           codeInput.value = decodedText;
 
-          // Lookup produit et afficher les infos sans soumettre le formulaire
+          // on cherche le produit
           fetch('/facturation/modules/produits/lire.php?code=' + encodeURIComponent(decodedText))
             .then(r => r.json())
             .then(data => {

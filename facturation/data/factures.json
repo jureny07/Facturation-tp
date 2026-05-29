@@ -66,5 +66,59 @@
         "total_ht": 90000,
         "tva": 16200,
         "total_ttc": 106200
+    },
+    {
+        "id_facture": "FAC-20260529-002",
+        "date": "2026-05-29",
+        "heure": "09:32:07",
+        "caissier": "admin",
+        "articles": [
+            {
+                "code_barre": "1000000000037",
+                "nom": "biscuits salés",
+                "prix_unitaire_ht": 3000,
+                "quantite": 4,
+                "sous_total_ht": 12000
+            }
+        ],
+        "total_ht": 12000,
+        "tva": 2160,
+        "total_ttc": 14160
+    },
+    {
+        "id_facture": "FAC-20260529-003",
+        "date": "2026-05-29",
+        "heure": "09:40:27",
+        "caissier": "admin",
+        "articles": [
+            {
+                "code_barre": "1000000000037",
+                "nom": "biscuits salés",
+                "prix_unitaire_ht": 3000,
+                "quantite": 4,
+                "sous_total_ht": 12000
+            }
+        ],
+        "total_ht": 12000,
+        "tva": 2160,
+        "total_ttc": 14160
+    },
+    {
+        "id_facture": "FAC-20260529-004",
+        "date": "2026-05-29",
+        "heure": "09:45:55",
+        "caissier": "admin",
+        "articles": [
+            {
+                "code_barre": "1000000000037",
+                "nom": "biscuits salés",
+                "prix_unitaire_ht": 3000,
+                "quantite": 4,
+                "sous_total_ht": 12000
+            }
+        ],
+        "total_ht": 12000,
+        "tva": 2160,
+        "total_ttc": 14160
     }
 ]

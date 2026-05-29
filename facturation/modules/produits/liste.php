@@ -50,7 +50,7 @@ usort($produits, fn($a,$b) => strcmp($a['nom'], $b['nom']));
           <td style="text-align:center">
             <span class="badge <?= $stock_class ?>"><?= $p['quantite_stock'] ?></span>
           </td>
-          <td class="td-mono"><?= htmlspecialchars($p['date_expiration']) ?></td>
+          <td class="td-mono"><?= htmlspecialchars($p['date_expiration'] ?: 'Aucune') ?></td>
           <td class="td-mono"><?= htmlspecialchars($p['date_enregistrement'] ?? '—') ?></td>
           <td>
             <a href="/facturation/modules/produits/enregistrer.php?code=<?= urlencode($p['code_barre']) ?>"

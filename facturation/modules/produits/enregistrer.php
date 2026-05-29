@@ -10,6 +10,7 @@ $erreur   = '';
 $succes   = '';
 $produit  = null;
 $code     = '';
+$noExpiration = false;
 
 // Recherche d'un produit existant (via scan ou formulaire GET)
 if (!empty($_GET['code'])) {
@@ -23,9 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'code_barre'       => trim($_POST['code_barre']      ?? ''),
         'nom'              => trim($_POST['nom']             ?? ''),
         'prix_unitaire_ht' => $_POST['prix_unitaire_ht']     ?? '',
-        'date_expiration'  => $_POST['date_expiration']       ?? '',
+        'date_expiration'  => isset($_POST['sans_expiration']) ? '' : ($_POST['date_expiration'] ?? ''),
         'quantite_stock'   => $_POST['quantite_stock']        ?? '',
     ];
+    $noExpiration = !empty($_POST['sans_expiration']);
     $resultat = enregistrer_produit($donnees);
     if ($resultat === true) {
         $_SESSION['succes'] = "Produit « {$donnees['nom']} » enregistré avec succès.";
@@ -35,6 +37,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $erreur = $resultat;
         $code   = $donnees['code_barre'];
     }
+}
+
+if ($produit && $produit['date_expiration'] === '') {
+    $noExpiration = true;
 }
 
 $titre = "Enregistrer un Produit";
@@ -52,7 +58,7 @@ require_once __DIR__ . '/../../includes/header.php';
   <div class="card">
     <div class="card-title">📷 Lecteur de Code-Barres</div>
     <div class="scanner-wrapper">
-      <video id="scanner-video" muted playsinline></video>
+      <div id="reader" style="width:100%;max-width:420px;margin:auto;"></div>
       <div class="scanner-overlay"><div class="scanner-crosshair"></div></div>
     </div>
     <div class="scanner-result" id="scanner-result">
@@ -106,8 +112,15 @@ require_once __DIR__ . '/../../includes/header.php';
       <div class="form-group">
         <label for="date_expiration">Date d'expiration (AAAA-MM-JJ)</label>
         <input type="date" id="date_expiration" name="date_expiration"
-               value="<?= htmlspecialchars($produit['date_expiration'] ?? $_POST['date_expiration'] ?? '') ?>"
-               required>
+               value="<?= htmlspecialchars($produit['date_expiration'] ?? ($_POST['date_expiration'] ?? '')) ?>"
+               <?= $noExpiration ? 'disabled' : 'required' ?> >
+      </div>
+      <div class="form-group">
+        <label class="checkbox-label" style="display:flex;align-items:center;gap:.5rem;">
+          <input type="checkbox" id="sans_expiration" name="sans_expiration"
+                 <?= $noExpiration ? 'checked' : '' ?>>
+          Produit sans date d'expiration
+        </label>
       </div>
       <div style="display:flex;gap:.75rem;margin-top:.5rem;">
         <button type="submit" class="btn btn-primary">
@@ -119,28 +132,117 @@ require_once __DIR__ . '/../../includes/header.php';
   </div>
 </div>
 
-<!-- QuaggaJS CDN -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
-<script src="/facturation/assets/js/scanner.js"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
 <script>
-  initScanner('scanner-video', 'scanner-result', 'code_barre', function(code) {
-    // Auto-submit après scan pour rechercher le produit existant
-    const form = document.querySelector('form');
-    const input = document.getElementById('code_barre');
-    if (input) input.value = code;
-    // Lookup AJAX
-    fetch('/facturation/modules/produits/lire.php?code=' + encodeURIComponent(code))
-      .then(r => r.json())
-      .then(data => {
-        if (data.found) {
-          document.getElementById('nom').value              = data.produit.nom || '';
-          document.getElementById('prix_unitaire_ht').value = data.produit.prix_unitaire_ht || '';
-          document.getElementById('quantite_stock').value   = data.produit.quantite_stock || '';
-          document.getElementById('date_expiration').value  = data.produit.date_expiration || '';
-          document.getElementById('scanner-result').innerHTML = '<span class="dot"></span> ✔ Produit existant chargé : <strong>' + data.produit.nom + '</strong>';
+  const scannerResult = document.getElementById('scanner-result');
+  const scannerStartBtn = document.getElementById('btn-scanner-start');
+  const scannerStopBtn = document.getElementById('btn-scanner-stop');
+  const codeInput = document.getElementById('code_barre');
+  let html5QrcodeScanner = null;
+  let lastScannedCode = null;
+
+  function updateScannerStatus(message, color = '#999') {
+    if (!scannerResult) return;
+    scannerResult.innerHTML = '<span class="dot"></span> ' + message;
+    scannerResult.style.color = color;
+  }
+
+  async function startMobileScanner() {
+    if (html5QrcodeScanner) return;
+    updateScannerStatus('🔄 Initialisation du scanner...');
+    html5QrcodeScanner = new Html5Qrcode('reader');
+    scannerStartBtn.disabled = true;
+    scannerStopBtn.disabled = false;
+
+    try {
+      await html5QrcodeScanner.start(
+        { facingMode: 'environment' },
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        (decodedText) => {
+          if (!decodedText || decodedText === lastScannedCode) return;
+          lastScannedCode = decodedText;
+          if (codeInput) codeInput.value = decodedText;
+
+          fetch('/facturation/modules/produits/lire.php?code=' + encodeURIComponent(decodedText))
+            .then(r => r.json())
+            .then(data => {
+              const dateExpirationInput = document.getElementById('date_expiration');
+              const noExpirationCheckbox = document.getElementById('sans_expiration');
+
+              if (data && data.found) {
+                document.getElementById('nom').value              = data.produit.nom || '';
+                document.getElementById('prix_unitaire_ht').value = data.produit.prix_unitaire_ht || '';
+                document.getElementById('quantite_stock').value   = data.produit.quantite_stock || '';
+                if (dateExpirationInput) dateExpirationInput.value = data.produit.date_expiration || '';
+                if (noExpirationCheckbox) {
+                  noExpirationCheckbox.checked = !data.produit.date_expiration;
+                }
+                syncExpirationFields();
+                updateScannerStatus('✔ Produit existant chargé : ' + data.produit.nom, '#4caf50');
+              } else {
+                if (noExpirationCheckbox) {
+                  noExpirationCheckbox.checked = false;
+                }
+                syncExpirationFields();
+                updateScannerStatus('✔ Code détecté : ' + decodedText + ' — produit inconnu.', '#4caf50');
+              }
+            })
+            .catch(err => {
+              console.error('Erreur lookup produit', err);
+              updateScannerStatus('❌ Erreur recherche produit', '#f44336');
+            });
+        },
+        (errorMessage) => {
+          // Ignorer les erreurs mineures de lecture.
         }
-      });
-  });
+      );
+      updateScannerStatus('▶ Scanner mobile actif. Présentez un code-barres ou QR.', '#4caf50');
+    } catch (error) {
+      console.error('Erreur démarrage scanner mobile', error);
+      updateScannerStatus('❌ Impossible d\'accéder à la caméra.', '#f44336');
+      scannerStartBtn.disabled = false;
+      scannerStopBtn.disabled = true;
+      html5QrcodeScanner = null;
+    }
+  }
+
+  async function stopMobileScanner() {
+    if (!html5QrcodeScanner) return;
+    try {
+      await html5QrcodeScanner.stop();
+      await html5QrcodeScanner.clear();
+    } catch (error) {
+      console.error('Erreur arrêt scanner mobile', error);
+    }
+    html5QrcodeScanner = null;
+    scannerStartBtn.disabled = false;
+    scannerStopBtn.disabled = true;
+    updateScannerStatus('⏹ Scanner mobile arrêté.', '#999');
+  }
+
+  function syncExpirationFields() {
+    const dateInput = document.getElementById('date_expiration');
+    const checkbox = document.getElementById('sans_expiration');
+    if (!dateInput || !checkbox) return;
+    dateInput.disabled = checkbox.checked;
+    dateInput.required = !checkbox.checked;
+    if (checkbox.checked) {
+      dateInput.value = '';
+    }
+  }
+
+  const expirationCheckbox = document.getElementById('sans_expiration');
+  if (expirationCheckbox) {
+    expirationCheckbox.addEventListener('change', syncExpirationFields);
+  }
+  window.addEventListener('load', syncExpirationFields);
+
+  if (scannerStartBtn) {
+    scannerStartBtn.addEventListener('click', startMobileScanner);
+  }
+  if (scannerStopBtn) {
+    scannerStopBtn.addEventListener('click', stopMobileScanner);
+  }
 </script>
 
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>

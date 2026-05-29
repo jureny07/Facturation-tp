@@ -316,7 +316,23 @@
         "nom": "biscuits salés",
         "prix_unitaire_ht": 3000,
         "date_expiration": "2026-09-15",
-        "quantite_stock": 63,
+        "quantite_stock": 51,
         "date_enregistrement": "2026-05-28"
+    },
+    {
+        "code_barre": "8904084717606",
+        "nom": "cahier",
+        "prix_unitaire_ht": 5000,
+        "date_expiration": "2029-07-11",
+        "quantite_stock": 60,
+        "date_enregistrement": "2026-05-29"
+    },
+    {
+        "code_barre": "8589509507002",
+        "nom": "eau",
+        "prix_unitaire_ht": 500,
+        "date_expiration": "2036-03-01",
+        "quantite_stock": 60,
+        "date_enregistrement": "2026-05-29"
     }
 ]

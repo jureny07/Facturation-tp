@@ -94,11 +94,13 @@ function valider_produit(array $donnees): array {
     $qte = $donnees['quantite_stock'] ?? '';
     if (!ctype_digit((string)$qte) || (int)$qte < 0) $erreurs[] = "La quantité doit être un entier positif ou nul.";
 
-    $date = $donnees['date_expiration'] ?? '';
-    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) || !checkdate(
-        (int)substr($date,5,2), (int)substr($date,8,2), (int)substr($date,0,4)
-    )) {
-        $erreurs[] = "Date d'expiration invalide (format attendu : AAAA-MM-JJ).";
+    $date = trim($donnees['date_expiration'] ?? '');
+    if ($date !== '') {
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) || !checkdate(
+            (int)substr($date,5,2), (int)substr($date,8,2), (int)substr($date,0,4)
+        )) {
+            $erreurs[] = "Date d'expiration invalide (format attendu : AAAA-MM-JJ).";
+        }
     }
     return $erreurs;
 }
